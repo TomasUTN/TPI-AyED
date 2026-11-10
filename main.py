@@ -11,7 +11,7 @@ def limpiar_pantalla():
 FILAS_PLATEA = 14
 FILAS_PALCO = 10
 COLUMNAS = 25      
-ubicaciones = [None] 
+ubicaciones = [] 
 ########################################## CARGADO DE ARCHIVOS EN VARIABLES ##########################################
 archivo_funcion = open("DB/funciones.txt", "r+", encoding="utf-8")
 funciones = archivo_funcion.readlines()
@@ -109,6 +109,10 @@ def registrar_funcion():
 
     limpiar_pantalla()
     fecha = input("Ingrese la fecha (dd/mm/aaaa): ")
+    while "-" in fecha or fecha.strip() == "":
+        limpiar_pantalla()
+        fecha = input("Formato invalido. Ingrese la fecha (dd/mm/aaaa): ")
+    
     limpiar_pantalla()
     hora = input("Ingrese el horario (hh:mm): ")
 
@@ -140,7 +144,7 @@ def registrar_funcion():
     limpiar_pantalla()
     print("Funcion registrada con exito")
 
-
+# METODO BURBUJA -- ORDENAMIENTO DE MENOR A MAYOR (ALFABETICAMENMTE)
 def ordenar_funciones_por_nombre_de_obras():
     copia = funciones[1:]
     for i in range(len(copia) - 1):
@@ -156,6 +160,7 @@ def ordenar_funciones_por_nombre_de_obras():
     for i in range(len(copia)):
         printear_funcion(copia[i])
 
+# TRATAR AL RESULTDAO IF buscar_indice_funcion(id_buscado) == -1 : NO ENCONTRADO
 def buscar_indice_funcion(id_buscado):
     i = 1
     while i < len(funciones):
@@ -279,7 +284,7 @@ def menu_funciones():
             buscar_funcion_por_nombre(nombre_pedido)
         elif opcion == "5":
             ordenar_funciones_por_nombre_de_obras()
-        else:
+        elif opcion != "6":
             limpiar_pantalla()
             print("Opción incorrecta. Intente nuevamente.")
 
@@ -316,4 +321,6 @@ def menu():
 
         else:
             print("Opción incorrecta. Intente nuevamente.")
+            input("\nPresione Enter para continuar...")
+cargar_ubicaciones()
 menu()
