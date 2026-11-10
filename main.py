@@ -13,18 +13,35 @@ FILAS_PALCO = 10
 COLUMNAS = 25      
 ubicaciones = [] 
 ########################################## CARGADO DE ARCHIVOS EN VARIABLES ##########################################
-archivo_funcion = open("DB/funciones.txt", "r+", encoding="utf-8")
-funciones = archivo_funcion.readlines()
-archivo_funcion.close()
-archivo_obras = open("DB/obras.txt", "r+", encoding="utf-8")
-obras = archivo_obras.readlines()
-archivo_obras.close()
-archivo_salas = open("DB/salas.txt", "r+", encoding="utf-8")
-salas = archivo_salas.readlines()
-archivo_salas.close()
+def carga_funciones():
+    archivo_funcion = open("DB/funciones.txt", "r+", encoding="utf-8")
+    funciones = archivo_funcion.readlines()
+    archivo_funcion.close()
+    return funciones
+def carga_obras():    
+    archivo_obras = open("DB/obras.txt", "r+", encoding="utf-8")
+    obras = archivo_obras.readlines()
+    archivo_obras.close()
+    return obras
+def carga_salas():
+    archivo_salas = open("DB/salas.txt", "r+", encoding="utf-8")
+    salas = archivo_salas.readlines()
+    archivo_salas.close()
+    return salas
+def carga_socios():    
+    archivo_socios = open("DB/socios.txt", "r+", encoding="utf-8")
+    socios = archivo_socios.readlines()
+    archivo_socios.close()
+    return socios
+def carga_ventas():
+    archivo_ventas = open("DB/ventas.txt", "r+", encoding="utf-8")
+    ventas = archivo_ventas.readlines()
+    archivo_ventas.close()
+    return ventas
 
 ########################################## FUNCIONES DE FUNCIONES XD ##########################################
 def printear_funcion(linea):
+    obras = carga_obras()
     funcion = linea.strip().split("-")
     nombre_obra = obras[int(funcion[1])].strip().split("-")[1]
     print("-"*155)
@@ -33,6 +50,7 @@ def printear_funcion(linea):
     
 def listar_funciones():
     limpiar_pantalla()
+    funciones = carga_funciones()
     if len(funciones) <= 1:
         print("")
         print("X ---> Upss, todavia no hay funciones registradas <--- X")
@@ -41,6 +59,7 @@ def listar_funciones():
             printear_funcion(funciones[i])
         
 def buscar_funcion_por_id(id):
+    funciones = carga_funciones()
     if id.isdigit() == False:
         print("")
         print("X ---> Upss, solo se reciben valores numericos <--- X")
@@ -66,6 +85,7 @@ def coincide(palabra, buscada):
     return True
 
 def buscar_funcion_por_nombre(input):
+    funciones = carga_funciones()
     input = input.strip().lower()
     if input == "":
         print("")
@@ -73,6 +93,7 @@ def buscar_funcion_por_nombre(input):
         return
     encontrado = False
     for i in range(1, len(funciones)):
+        obras = carga_obras()
         funcion = funciones[i].strip().split("-")
         nombre_obra = obras[int(funcion[1])].strip().split("-")[1].lower()
         if coincide(nombre_obra, input):
@@ -83,6 +104,7 @@ def buscar_funcion_por_nombre(input):
         print("X ---> Upss, parece que no tenemos obras con ese nombre <--- X")
 
 def listar_obras():
+    obras = carga_obras()
     limpiar_pantalla()
     for i in range(1,len(obras)):
         obra= obras[i].split("-")
@@ -91,6 +113,7 @@ def listar_obras():
         print("-"*155)
         
 def listar_salas():
+    salas = carga_salas()
     limpiar_pantalla()
     for i in range(1,len(salas)):
         sala= salas[i].split("-")
@@ -99,6 +122,9 @@ def listar_salas():
         print("-"*155)
         
 def registrar_funcion():
+    funciones = carga_funciones()
+    obras = carga_obras()
+    salas = carga_salas()
     id_funcion = len(funciones)
     listar_obras()
 
@@ -146,6 +172,8 @@ def registrar_funcion():
 
 # METODO BURBUJA -- ORDENAMIENTO DE MENOR A MAYOR (ALFABETICAMENMTE)
 def ordenar_funciones_por_nombre_de_obras():
+    funciones = carga_funciones()
+    obras = carga_obras()
     copia = funciones[1:]
     for i in range(len(copia) - 1):
         for j in range(len(copia) - 1 - i):
@@ -162,6 +190,7 @@ def ordenar_funciones_por_nombre_de_obras():
 
 # TRATAR AL RESULTDAO IF buscar_indice_funcion(id_buscado) == -1 : NO ENCONTRADO
 def buscar_indice_funcion(id_buscado):
+    funciones = carga_funciones()
     i = 1
     while i < len(funciones):
         funcion = funciones[i].strip().split("-")
@@ -222,6 +251,7 @@ def mostrar_ubicaciones(matriz):
     
 #una matriz de platea y una de palco por cada funcion con la cantidad de filas y columnas ya definidas (ESTAN AL PRINCIPIO)
 def cargar_ubicaciones():
+    funciones = carga_funciones()
     for i in range(1, len(funciones)):
         ubicaciones.append([crear_matriz(FILAS_PLATEA, COLUMNAS), crear_matriz(FILAS_PALCO, COLUMNAS)])
 
