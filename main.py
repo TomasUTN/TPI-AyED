@@ -254,6 +254,41 @@ def consultar_ubicaciones():
     
     
 #######################################            MENUES             #################################################
+def menu_consultas():    
+    opcion = ""
+
+    while opcion != "7":
+
+        print("\n======================================")
+        print("        Teatro CaPaz S.A.")
+        print("======================================")
+        print("1. Cantidad de entradas vendidas para una función.")
+        print("2. Cantidad de ubicaciones disponibles para una función.")
+        print("3. Recaudación total de una función.")
+        print("4. Recaudación total de todas las funciones.")
+        print("5. Listado de funciones ordenado según un criterio de demanda.")
+        print("6. Identificación de la función con mayor cantidad de entradas vendidas.")
+        print("7. Salir.")  
+        print("======================================")
+
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            pass
+        elif opcion == "2":
+            pass
+        elif opcion == "3":
+            pass
+        elif opcion == "4":
+            pass
+        elif opcion == "5":
+            pass
+        elif opcion == "6":
+            pass
+        elif opcion != "7":
+            limpiar_pantalla()
+            print("Opción incorrecta. Intente nuevamente.")
+
 def menu_funciones():
     opcion = ""
 
@@ -314,7 +349,7 @@ def menu():
             #()
             input("\nPresione Enter para continuar...")
         elif opcion == "4":
-            #()
+            menu_consultas()
             input("\nPresione Enter para continuar...")
         elif opcion == "5":
             print("Gracias por utilizar el sistema.")
