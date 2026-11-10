@@ -1,2 +1,2 @@
 # TPI-AyED
-Ceballos - Miranda - Panero
+Ceballos - Miranda - Paez - Panero - Rojas
