@@ -6,7 +6,12 @@ def limpiar_pantalla():
         subprocess.run(["cmd", "/c", "cls"])
     else:
         subprocess.run(["clear"])
-        
+# UBIOCACIONES 14x25 = 350 platea, 10x25 = 250 palcos 
+# ubicaciones[id_funcion] = [matriz_platea, matriz_palco]
+FILAS_PLATEA = 14
+FILAS_PALCO = 10
+COLUMNAS = 25      
+ubicaciones = [None] 
 ########################################## CARGADO DE ARCHIVOS EN VARIABLES ##########################################
 archivo_funcion = open("DB/funciones.txt", "r+", encoding="utf-8")
 funciones = archivo_funcion.readlines()
@@ -131,6 +136,7 @@ def registrar_funcion():
     archivo.write(linea + "\n")
     archivo.close()
     funciones.append(linea + "\n")
+    ubicaciones.append([crear_matriz(FILAS_PLATEA, COLUMNAS), crear_matriz(FILAS_PALCO, COLUMNAS)])
     limpiar_pantalla()
     print("Funcion registrada con exito")
 
@@ -150,8 +156,99 @@ def ordenar_funciones_por_nombre_de_obras():
     for i in range(len(copia)):
         printear_funcion(copia[i])
 
+def buscar_indice_funcion(id_buscado):
+    i = 1
+    while i < len(funciones):
+        funcion = funciones[i].strip().split("-")
+        if int(funcion[0]) == id_buscado:
+            return i
+        i = i + 1
+    return -1
+########################################## UBICACIONES ##################################################################
+def crear_matriz(filas, columnas):
+    matriz = []
+    for i in range(filas):
+        fila = []
+        for j in range(columnas):
+            fila.append(0)
+        matriz.append(fila)
+    return matriz
 
+#sector 1=platea 2=palco
+def obtener_matriz(id_funcion, sector):
+    return ubicaciones[id_funcion][int(sector) - 1]
 
+def numero_valido(matriz, numero):
+    if numero >= 1 and numero <= len(matriz) * COLUMNAS:
+        return True
+    else:
+        return False
+
+def esta_disponible(matriz, numero):
+    fila = (numero - 1) // COLUMNAS
+    columna = (numero - 1) % COLUMNAS
+    return matriz[fila][columna] == 0
+
+def marcar_vendida(matriz, numero):
+    fila = (numero - 1) // COLUMNAS
+    columna = (numero - 1) % COLUMNAS
+    matriz[fila][columna] = 1
+
+def contar_estado(matriz, estado):
+    cantidad = 0
+    for i in range(len(matriz)):
+        for j in range(len(matriz[i])):
+            if matriz[i][j] == estado:
+                cantidad = cantidad + 1
+    return cantidad
+
+def mostrar_ubicaciones(matriz):
+    numero = 1
+    for i in range(len(matriz)):
+        linea = ""
+        for j in range(len(matriz[i])):
+            if matriz[i][j] == 0:
+                linea = linea + str(numero).ljust(5)
+            else:
+                linea = linea + "XX".ljust(5)
+            numero = numero + 1
+        print(linea)
+    print("XX = vendida")
+    
+#una matriz de platea y una de palco por cada funcion con la cantidad de filas y columnas ya definidas (ESTAN AL PRINCIPIO)
+def cargar_ubicaciones():
+    for i in range(1, len(funciones)):
+        ubicaciones.append([crear_matriz(FILAS_PLATEA, COLUMNAS), crear_matriz(FILAS_PALCO, COLUMNAS)])
+
+def consultar_ubicaciones():
+    limpiar_pantalla()
+    
+    id_pedido = input("ID de la funcion: ")
+    if id_pedido.isdigit() == False:
+        print("")
+        print("X ---> Upss, solo se reciben valores numericos <--- X")
+        return
+    
+    if buscar_indice_funcion(int(id_pedido)) == -1:
+        print("")
+        print("X ---> Upss, no tenemos ninguna funcion con esa ID <--- X")
+        return
+
+    sector = input("Sector (1-Platea, 2-Palco): ")
+    if sector != "1" and sector != "2":
+        print("")
+        print("X ---> Upss, sector invalido <--- X")
+        return
+
+    matriz = obtener_matriz(int(id_pedido), sector)
+    limpiar_pantalla()
+    mostrar_ubicaciones(matriz)
+    print("Disponibles:", contar_estado(matriz, 0), "- Vendidas:", contar_estado(matriz, 1))
+    
+    
+    
+    
+#######################################            MENUES             #################################################
 def menu_funciones():
     opcion = ""
 
@@ -206,14 +303,14 @@ def menu():
         if opcion == "1":
             menu_funciones()
         elif opcion == "2":
-            #()
-            pass
+            consultar_ubicaciones()
+            input("\nPresione Enter para continuar...")
         elif opcion == "3":
             #()
-            pass
+            input("\nPresione Enter para continuar...")
         elif opcion == "4":
             #()
-            pass
+            input("\nPresione Enter para continuar...")
         elif opcion == "5":
             print("Gracias por utilizar el sistema.")
 
