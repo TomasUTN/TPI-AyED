@@ -6,13 +6,14 @@ def limpiar_pantalla():
         subprocess.run(["cmd", "/c", "cls"])
     else:
         subprocess.run(["clear"])
+    
 # UBIOCACIONES 14x25 = 350 platea, 10x25 = 250 palcos 
 # ubicaciones[id_funcion] = [matriz_platea, matriz_palco]
 FILAS_PLATEA = 14
 FILAS_PALCO = 10
 COLUMNAS = 25      
 ubicaciones = [] 
-########################################## CARGADO DE ARCHIVOS EN VARIABLES ##########################################
+########################################## CARGADO DE ARCHIVOS EN VARIABLES ######################################################################################################################
 def carga_funciones():
     archivo_funcion = open("DB/funciones.txt", "r+", encoding="utf-8")
     funciones = archivo_funcion.readlines()
@@ -39,7 +40,7 @@ def carga_ventas():
     archivo_ventas.close()
     return ventas
 
-########################################## FUNCIONES DE FUNCIONES XD ##########################################
+########################################## FUNCIONES DE FUNCIONES XD ######################################################################################################################
 def printear_funcion(linea):
     obras = carga_obras()
     funcion = linea.strip().split("-")
@@ -107,7 +108,7 @@ def listar_obras():
     obras = carga_obras()
     limpiar_pantalla()
     for i in range(1,len(obras)):
-        obra= obras[i].split("-")
+        obra = obras[i].strip().split("-")
         print("-"*155)
         print(f"ID:{obra[0]} - Nombre de la obra o espectáculo:{obra[1]}  - Genero:{obra[3]}")
         print("-"*155)
@@ -116,7 +117,7 @@ def listar_salas():
     salas = carga_salas()
     limpiar_pantalla()
     for i in range(1,len(salas)):
-        sala= salas[i].split("-")
+        sala = salas[i].strip().split("-")
         print("-"*155)
         print(f"ID:{sala[0]} - Descripcion:{sala[1]}")
         print("-"*155)
@@ -141,6 +142,9 @@ def registrar_funcion():
     
     limpiar_pantalla()
     hora = input("Ingrese el horario (hh:mm): ")
+    while "-" in hora or hora.strip() == "":
+        limpiar_pantalla()
+        hora = input("Formato invalido. Ingrese el horario (hh:mm): ")
 
     listar_salas()
     id_sala = input("Ingrese el ID de la sala: ")
@@ -198,7 +202,7 @@ def buscar_indice_funcion(id_buscado):
             return i
         i = i + 1
     return -1
-########################################## UBICACIONES ##################################################################
+########################################## UBICACIONES ##############################################################################################################################################
 def crear_matriz(filas, columnas):
     matriz = []
     for i in range(filas):
@@ -210,7 +214,7 @@ def crear_matriz(filas, columnas):
 
 #sector 1=platea 2=palco
 def obtener_matriz(id_funcion, sector):
-    return ubicaciones[id_funcion][int(sector) - 1]
+    return ubicaciones[id_funcion - 1][int(sector) - 1]
 
 def numero_valido(matriz, numero):
     if numero >= 1 and numero <= len(matriz) * COLUMNAS:
@@ -254,6 +258,12 @@ def cargar_ubicaciones():
     funciones = carga_funciones()
     for i in range(1, len(funciones)):
         ubicaciones.append([crear_matriz(FILAS_PLATEA, COLUMNAS), crear_matriz(FILAS_PALCO, COLUMNAS)])
+    ventas = carga_ventas()
+    for i in range(1, len(ventas)):
+        venta = ventas[i].strip().split("-")
+        matriz = obtener_matriz(int(venta[1]), venta[2])
+        for ubicacion in venta[3].split(","):
+            marcar_vendida(matriz, int(ubicacion))
 
 def consultar_ubicaciones():
     limpiar_pantalla()
@@ -279,8 +289,130 @@ def consultar_ubicaciones():
     limpiar_pantalla()
     mostrar_ubicaciones(matriz)
     print("Disponibles:", contar_estado(matriz, 0), "- Vendidas:", contar_estado(matriz, 1))
-    
-    
+
+
+
+########################################## PILA (ESTRUCTURA DINAMICA OBLIGATORIA) ##############################################################################################################
+# UN nodo es [dato, siguiente]
+def pila_vacia(tope):
+    return tope == None
+
+def apilar(tope, dato):
+    return [dato, tope] # el nuevo nodo apunta al tope anterior
+
+# devuelve el dato sacado y el nuevo tope
+def desapilar(tope):
+    if tope == None:
+        return None, None# caso limite: pila vacia
+    return tope[0], tope[1]
+
+def pila_contiene(tope, dato):
+    actual = tope
+    while actual != None:
+        if actual[0] == dato:
+            return True
+        actual = actual[1]
+    return False
+
+
+##########################################        VENTAS       ########################################################################################################
+def es_socio(dni):
+    socios = carga_socios()
+    for i in range(1, len(socios)):
+        socio = socios[i].strip().split("-")
+        if socio[1] == dni:
+            return True
+    return False
+
+def registrar_venta():
+    limpiar_pantalla()
+    funciones = carga_funciones()
+
+    id_pedido = input("ID de la funcion: ")
+    if id_pedido.isdigit() == False:
+        print("")
+        print("X ---> Upss, solo se reciben valores numericos <--- X")
+        return
+    indice = buscar_indice_funcion(int(id_pedido))
+    if indice == -1:
+        print("")
+        print("X ---> Upss, no tenemos ninguna funcion con esa ID <--- X")
+        return
+
+    sector = input("Sector (1-Platea, 2-Palco): ")
+    if sector != "1" and sector != "2":
+        print("")
+        print("X ---> Upss, sector invalido <--- X")
+        return
+    matriz = obtener_matriz(int(id_pedido), sector)
+
+    cantidad = input("Cantidad de entradas: ")
+    if cantidad.isdigit() == False or int(cantidad) < 1:
+        print("")
+        print("X ---> Upss, cantidad invalida <--- X")
+        return
+    cantidad = int(cantidad)
+    if cantidad > contar_estado(matriz, 0):
+        print("")
+        print("X ---> Upss, no hay tantas ubicaciones disponibles <--- X")
+        return
+
+    #usamos la setruictura dinamica para las ubicaciones elegidas
+    elegidas= None
+    cantidad_elegidas= 0
+    while cantidad_elegidas < cantidad:
+        numero= input("Numero de ubicacion (0 para deshacer la ultima): ")
+        if numero == "0":
+            if pila_vacia(elegidas):
+                print("No hay ubicaciones para deshacer")
+            else:
+                quitada, elegidas = desapilar(elegidas)
+                cantidad_elegidas = cantidad_elegidas - 1
+                print("Se quito la ubicacion", quitada)
+        elif numero.isdigit()==False:
+            print("Solo numeros")
+        elif numero_valido(matriz, int(numero))== False:
+            print("Esa ubicacion no existe")
+        elif esta_disponible(matriz, int(numero))== False:
+            print("Esa ubicacion ya esta vendida")
+        elif pila_contiene(elegidas, int(numero)):
+            print("Ya la elegiste")
+        else:
+            elegidas = apilar(elegidas, int(numero))
+            cantidad_elegidas = cantidad_elegidas + 1
+
+    # extraerprecio segun el sector
+    funcion = funciones[indice].strip().split("-")
+    if sector == "1":
+        precio= int(funcion[5])
+    else:
+        precio =int(funcion[6])
+
+    dni = input("Dni del comprador: ")
+    while dni.isdigit() == False:
+        dni = input("Solo numeros. Dni del comprador: ")
+    descuento = 0
+    if es_socio(dni):
+        descuento = 0.30
+        print("El comprador es Socio: 30% de descuento aplicado")
+    importe =precio * cantidad
+    importe =round(importe -(importe* descuento))
+
+    #recien ahora las saca de la pila y se marcan como vendidas las ubis
+    texto_ubicaciones =""
+    while pila_vacia(elegidas) == False:
+        numero, elegidas = desapilar(elegidas)
+        marcar_vendida(matriz, numero)
+        if texto_ubicaciones!= "":
+            texto_ubicaciones = texto_ubicaciones + ","
+        texto_ubicaciones = texto_ubicaciones + str(numero)
+
+    codigo = len(carga_ventas())
+    linea = f"{codigo}-{id_pedido}-{sector}-{texto_ubicaciones}-{cantidad}-{precio}-{descuento}-{importe}-{dni}"
+    archivo = open("DB/ventas.txt", "a", encoding="utf-8")
+    archivo.write(linea + "\n")
+    archivo.close()
+    print("Venta registrada. Importe final: $", importe)
     
     
 #######################################            MENUES             #################################################
@@ -376,7 +508,7 @@ def menu():
             consultar_ubicaciones()
             input("\nPresione Enter para continuar...")
         elif opcion == "3":
-            #()
+            registrar_venta()
             input("\nPresione Enter para continuar...")
         elif opcion == "4":
             menu_consultas()
