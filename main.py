@@ -556,7 +556,7 @@ def informe_funcion_mas_vendida():
             id_mas_vendida = id_funcion
 
     print("-"*155)
-    print(f"Funcion con mas entradas vendidas: id {id_mas_vendida}")
+    print(f"Funcion con mas entradas vendidas, Id de función: {id_mas_vendida}")
     print(f"Entradas vendidas: {max_entradas}")
     
 def informe_cantidad_ubicaciones_disp_funcion(id_funcion):
