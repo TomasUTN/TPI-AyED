@@ -475,15 +475,18 @@ def informe_recaudacion_funcion():
         print("-"*155)
         print(f"Ventas realizadas: {cant_ventas}")
         print(f"Recaudacion de la funcion: ${total}")
-        
+
+#RECURSIVO OBLIGATORIO
+def sumar_importes(ventas, i):
+    if i >= len(ventas):# PASO base: no quedan ventas
+        return 0
+    venta = ventas[i].strip().split("-")
+    return int(venta[7]) + sumar_importes(ventas, i + 1)#PASO recursivo
+
 def informe_recaudacion_total():
     ventas = carga_ventas()
-    total = 0
-    for i in range(1,len(ventas)):
-        venta = ventas[i].strip().split("-")
-        total_importe = int(venta[7])
-        total += total_importe
-
+    total = sumar_importes(ventas, 1)
+    
     if total == 0:
         print("")
         print("X ---> Upss, todavia no hay ventas registradas <--- X")
@@ -518,7 +521,7 @@ def informe_funcion_mas_vendida():
     print(f"Funcion con mas entradas vendidas: id {id_mas_vendida}")
     print(f"Entradas vendidas: {max_entradas}")
     
-def informe_cantidad_ubicaciones_disp_función(id_funcion):
+def informe_cantidad_ubicaciones_disp_funcion(id_funcion):
     ventas = carga_ventas()    
     cant_platea = 0
     cant_palco = 0
@@ -574,7 +577,7 @@ def menu_consultas():
             input("\nPresione Enter para continuar...")
         elif opcion == "2":
             id_funcion = input("Ingrese el ID de la funcion que desea saber la cantidad de lugares disponibles: ")
-            informe_cantidad_ubicaciones_disp_función(id_funcion)
+            informe_cantidad_ubicaciones_disp_funcion(id_funcion)
             input("\nPresione Enter para continuar...")
         elif opcion == "3":
             informe_recaudacion_funcion()
