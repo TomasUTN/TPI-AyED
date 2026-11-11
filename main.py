@@ -515,7 +515,7 @@ def informe_funcion_mas_vendida():
             id_mas_vendida = id_funcion
 
     print("-"*155)
-    print(f"Funcion con mas entradas vendidas: ID {id_mas_vendida}")
+    print(f"Funcion con mas entradas vendidas: id {id_mas_vendida}")
     print(f"Entradas vendidas: {max_entradas}")
     
     
@@ -540,11 +540,10 @@ def menu_consultas():
         opcion = input("Seleccione una opción: ")
 
         if opcion == "1":
-            id_funcion = input("Ingrese el ID de la funcion que desea saber lca cantidad de entradas vendidas: ")
-            print(obtener_cantidad_vendidas_por_funcion(id_funcion))
+            id_funcion = input("Ingrese el ID de la funcion que desea saber la cantidad de entradas vendidas: ")
+            obtener_cantidad_vendidas_por_funcion(id_funcion)
             input("\nPresione Enter para continuar...")
         elif opcion == "2":
-            
             input("\nPresione Enter para continuar...")
         elif opcion == "3":
             informe_recaudacion_funcion()
@@ -555,6 +554,7 @@ def menu_consultas():
         elif opcion == "5":
             input("\nPresione Enter para continuar...")
         elif opcion == "6":
+            informe_funcion_mas_vendida()
             input("\nPresione Enter para continuar...")
         elif opcion != "7":
             limpiar_pantalla()
