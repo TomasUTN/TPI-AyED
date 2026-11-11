@@ -473,12 +473,38 @@ def informe_recaudacion_total():
 
     if total == 0:
         print("")
-        print("X ---> Upss, no hay ventas registradas para esta función <--- X")
+        print("X ---> Upss, todavia no hay ventas registradas <--- X")
         return
     else:
         print("-"*155)
         print(f"Recaudacion total distribuida entre todas las funciones: ${total}")
 
+def informe_funcion_mas_vendida():
+    funciones = carga_funciones()
+    ventas = carga_ventas()
+    if len(ventas) <= 1:
+        print("")
+        print("X ---> Upss, todavia no hay ventas registradas <--- X")
+        return
+
+    id_mas_vendida = 0
+    max_entradas = 0
+    for i in range(1, len(funciones)):
+        funcion = funciones[i].strip().split("-")
+        id_funcion = funcion[0]
+        entradas = 0
+        for j in range(1, len(ventas)):
+            venta = ventas[j].strip().split("-")
+            if venta[1] == id_funcion:
+                entradas += int(venta[4])
+        if entradas > max_entradas:
+            max_entradas = entradas
+            id_mas_vendida = id_funcion
+
+    print("-"*155)
+    print(f"Funcion con mas entradas vendidas: ID {id_mas_vendida}")
+    print(f"Entradas vendidas: {max_entradas}")
+    
     
 #######################################            MENUES             #################################################
 def menu_consultas():    
