@@ -416,21 +416,68 @@ def registrar_venta():
     archivo.write(linea + "\n")
     archivo.close()
     print("Venta registrada. Importe final: $", importe)
+##########################################        INFORMES       ########################################################################################################
+
+def informe_recaudacion_funcion():
+    listar_funciones()
+    print("")
     
+    id_pedido = input("ID de la funcion: ")
+    if id_pedido.isdigit() == False:
+        print("")
+        print("X ---> Upss, solo se reciben valores numericos <--- X")
+        return
+    
+    ventas = carga_ventas()
+    total = 0
+    cant_ventas =0
+    for i in range(1,len(ventas)):
+        venta = ventas[i].strip().split("-")
+        id_funcion = venta[1]
+        total_importe = int(venta[7])
+        if id_funcion == id_pedido:
+            total += total_importe
+            cant_ventas += 1
+            
+    if cant_ventas == 0:
+        print("")
+        print("X ---> Upss, no hay ventas registradas para esta función <--- X")
+        return
+    else:
+        print("-"*155)
+        print(f"Ventas realizadas: {cant_ventas}")
+        print(f"Recaudacion de la funcion: ${total}")
+        
+def informe_recaudacion_total():
+    ventas = carga_ventas()
+    total = 0
+    for i in range(1,len(ventas)):
+        venta = ventas[i].strip().split("-")
+        total_importe = int(venta[7])
+        total += total_importe
+
+    if total == 0:
+        print("")
+        print("X ---> Upss, no hay ventas registradas para esta función <--- X")
+        return
+    else:
+        print("-"*155)
+        print(f"Recaudacion total distribuida entre todas las funciones: ${total}")
+
     
 #######################################            MENUES             #################################################
 def menu_consultas():    
     opcion = ""
 
     while opcion != "7":
-
+        limpiar_pantalla()
         print("\n======================================")
         print("        Teatro CaPaz S.A.")
         print("======================================")
         print("1. Cantidad de entradas vendidas para una función.")
         print("2. Cantidad de ubicaciones disponibles para una función.")
-        print("3. Recaudación total de una función.")
-        print("4. Recaudación total de todas las funciones.")
+        print("3. Informe de recaudación total de una función.")
+        print("4. Informe de recaudación total de todas las funciones.")
         print("5. Listado de funciones ordenado según un criterio de demanda.")
         print("6. Identificación de la función con mayor cantidad de entradas vendidas.")
         print("7. Salir.")  
@@ -440,16 +487,20 @@ def menu_consultas():
 
         if opcion == "1":
             pass
+            input("\nPresione Enter para continuar...")
         elif opcion == "2":
             pass
+            input("\nPresione Enter para continuar...")
         elif opcion == "3":
-            pass
+            informe_recaudacion_funcion()
+            input("\nPresione Enter para continuar...")
         elif opcion == "4":
-            pass
+            informe_recaudacion_total()
+            input("\nPresione Enter para continuar...")
         elif opcion == "5":
-            pass
+            input("\nPresione Enter para continuar...")
         elif opcion == "6":
-            pass
+            input("\nPresione Enter para continuar...")
         elif opcion != "7":
             limpiar_pantalla()
             print("Opción incorrecta. Intente nuevamente.")
@@ -458,7 +509,7 @@ def menu_funciones():
     opcion = ""
 
     while opcion != "6":
-
+        limpiar_pantalla()
         print("\n======================================")
         print("        Teatro CaPaz S.A.")
         print("======================================")
@@ -474,16 +525,22 @@ def menu_funciones():
 
         if opcion == "1":
             registrar_funcion()
+            input("\nPresione Enter para continuar...")
+
         elif opcion == "2":
             listar_funciones()
+            input("\nPresione Enter para continuar...")
         elif opcion == "3":
             id_pedido = input("Ingrese el ID de la funcion que desea visualizar: ")
             buscar_funcion_por_id(id_pedido)
+            input("\nPresione Enter para continuar...")
         elif opcion == "4":
             nombre_pedido = input("Ingrese el nombre o fragmento de nombre de la funcion que desea visualizar: ")            
             buscar_funcion_por_nombre(nombre_pedido)
+            input("\nPresione Enter para continuar...")
         elif opcion == "5":
             ordenar_funciones_por_nombre_de_obras()
+            input("\nPresione Enter para continuar...")
         elif opcion != "6":
             limpiar_pantalla()
             print("Opción incorrecta. Intente nuevamente.")
@@ -497,7 +554,7 @@ def menu():
         print("        Teatro CaPaz S.A.")
         print("======================================")
         print("1. Administrar Funciones")
-        print("2. Consultar ubicaciones")
+        print("2. Consultar ubicaciones de una sección de la función")
         print("3. Realizar una venta")
         print("4. Consultas y reportes")
         print("5. Salir")
