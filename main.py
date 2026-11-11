@@ -360,6 +360,9 @@ def registrar_venta():
     #usamos la setruictura dinamica para las ubicaciones elegidas
     elegidas= None
     cantidad_elegidas= 0
+    limpiar_pantalla()
+    matriz = obtener_matriz(int(id_pedido),sector)
+    mostrar_ubicaciones(matriz)
     while cantidad_elegidas < cantidad:
         numero= input("Numero de ubicacion (0 para deshacer la ultima): ")
         if numero == "0":
