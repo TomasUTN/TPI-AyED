@@ -225,7 +225,10 @@ def numero_valido(matriz, numero):
 def esta_disponible(matriz, numero):
     fila = (numero - 1) // COLUMNAS
     columna = (numero - 1) % COLUMNAS
-    return matriz[fila][columna] == 0
+    if matriz[fila][columna] == 0:
+        return True
+    else:
+        return False
 
 def marcar_vendida(matriz, numero):
     fila = (numero - 1) // COLUMNAS
