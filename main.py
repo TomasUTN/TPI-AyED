@@ -418,6 +418,44 @@ def registrar_venta():
     print("Venta registrada. Importe final: $", importe)
 ##########################################        INFORMES       ########################################################################################################
 
+def informe_ordenar_funciones_por_demanda():
+    funciones = carga_funciones()
+    ventas = carga_ventas()
+    copia = []
+
+    for i in range(1, len(funciones)):
+        funcion = funciones[i].strip().split("-")
+        id_funcion = funcion[0]
+
+        cant_platea = 0
+        cant_palco = 0
+
+        for j in range(1, len(ventas)):
+            venta = ventas[j].strip().split("-")
+
+            if venta[1] == id_funcion:
+                if venta[2] == "1": # es platea
+                    cant_platea = cant_platea + int(venta[4])
+                elif venta[2] == "2": # es palco
+                    cant_palco = cant_palco + int(venta[4])
+
+        total_entradas = cant_platea + cant_palco
+
+        copia.append([funciones[i], total_entradas])
+
+# METODO BURBUJA -- ORDENAMIENTO DE MAYOR A MENOR DEMANDA
+    for i in range(len(copia) - 1):
+        for j in range(len(copia) - 1 - i):
+            if copia[j][1] < copia[j + 1][1]:
+                auxiliar = copia[j]
+                copia[j] = copia[j + 1]
+                copia[j + 1] = auxiliar
+
+    #### muestro los 
+    for i in range(len(copia)):
+        printear_funcion(copia[i][0])
+        print(f"Entradas vendidas: {copia[i][1]}")
+        
 def informe_cantidad_vendidas_por_funcion(id_funcion):
         
     ventas = carga_ventas()    
@@ -586,6 +624,7 @@ def menu_consultas():
             informe_recaudacion_total()
             input("\nPresione Enter para continuar...")
         elif opcion == "5":
+            informe_ordenar_funciones_por_demanda()
             input("\nPresione Enter para continuar...")
         elif opcion == "6":
             informe_funcion_mas_vendida()
