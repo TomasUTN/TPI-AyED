@@ -423,6 +423,17 @@ def obtener_cantidad_vendidas_por_funcion(id_funcion):
     ventas = carga_ventas()    
     cant_platea = 0
     cant_palco = 0
+    
+    if id_funcion.isdigit() == False:
+        print("")
+        print("X ---> Upss, solo se reciben valores numericos <--- X")
+        return
+    
+    if buscar_indice_funcion(int(id_funcion)) == -1:
+        print("")
+        print("X ---> Upss, no tenemos ninguna funcion con esa ID <--- X")
+        return
+    
     for i in range(len(ventas)):
         venta = ventas[i].strip().split("-")
         if venta[1] == id_funcion:
@@ -431,7 +442,9 @@ def obtener_cantidad_vendidas_por_funcion(id_funcion):
             elif venta[2] == "2":#es palco
                  cant_palco =  cant_palco + int(venta[4])
     
-    return cant_platea,  cant_palco
+    print(f"Entradas vendidas en platea: {cant_platea} \nEntradas vendidas en palco: {cant_palco}")
+    return
+
 
 def informe_recaudacion_funcion():
     listar_funciones()
@@ -528,12 +541,10 @@ def menu_consultas():
 
         if opcion == "1":
             id_funcion = input("Ingrese el ID de la funcion que desea saber lca cantidad de entradas vendidas: ")
-            platea,palco = obtener_cantidad_vendidas_por_funcion(id_funcion)
-            print(f"Entradas vendidas en platea: {platea}")
-            print(f"Entradas vendidas en palco: {palco}")
+            print(obtener_cantidad_vendidas_por_funcion(id_funcion))
             input("\nPresione Enter para continuar...")
         elif opcion == "2":
-            pass
+            
             input("\nPresione Enter para continuar...")
         elif opcion == "3":
             informe_recaudacion_funcion()
