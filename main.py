@@ -418,6 +418,21 @@ def registrar_venta():
     print("Venta registrada. Importe final: $", importe)
 ##########################################        INFORMES       ########################################################################################################
 
+def obtener_cantidad_vendidas_por_funcion(id_funcion):
+        
+    ventas = carga_ventas()    
+    cant_platea = 0
+    cant_palco = 0
+    for i in range(len(ventas)):
+        venta = ventas[i].strip().split("-")
+        if venta[1] == id_funcion:
+            if venta[2] == "1":#es platea
+                cant_platea = cant_platea + int(venta[4])
+            elif venta[2] == "2":#es palco
+                 cant_palco =  cant_palco + int(venta[4])
+    
+    return cant_platea,  cant_palco
+
 def informe_recaudacion_funcion():
     listar_funciones()
     print("")
@@ -486,7 +501,10 @@ def menu_consultas():
         opcion = input("Seleccione una opción: ")
 
         if opcion == "1":
-            pass
+            id_funcion = input("Ingrese el ID de la funcion que desea saber lca cantidad de entradas vendidas: ")
+            platea,palco = obtener_cantidad_vendidas_por_funcion(id_funcion)
+            print(f"Entradas vendidas en platea: {platea}")
+            print(f"Entradas vendidas en palco: {palco}")
             input("\nPresione Enter para continuar...")
         elif opcion == "2":
             pass
