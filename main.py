@@ -418,7 +418,7 @@ def registrar_venta():
     print("Venta registrada. Importe final: $", importe)
 ##########################################        INFORMES       ########################################################################################################
 
-def obtener_cantidad_vendidas_por_funcion(id_funcion):
+def informe_cantidad_vendidas_por_funcion(id_funcion):
         
     ventas = carga_ventas()    
     cant_platea = 0
@@ -518,7 +518,36 @@ def informe_funcion_mas_vendida():
     print(f"Funcion con mas entradas vendidas: id {id_mas_vendida}")
     print(f"Entradas vendidas: {max_entradas}")
     
+def informe_cantidad_ubicaciones_disp_función(id_funcion):
+    ventas = carga_ventas()    
+    cant_platea = 0
+    cant_palco = 0
     
+    if id_funcion.isdigit() == False:
+        print("")
+        print("X ---> Upss, solo se reciben valores numericos <--- X")
+        return
+    
+    if buscar_indice_funcion(int(id_funcion)) == -1:
+        print("")
+        print("X ---> Upss, no tenemos ninguna funcion con esa ID <--- X")
+        return
+    
+    for i in range(len(ventas)):
+        venta = ventas[i].strip().split("-")
+        if venta[1] == id_funcion:
+            if venta[2] == "1":#es platea
+                cant_platea = cant_platea + int(venta[4])
+            elif venta[2] == "2":#es palco
+                 cant_palco =  cant_palco + int(venta[4])
+    
+    cant_platea = 350 - cant_platea
+    cant_palco = 250 - cant_palco
+    print(f"Cantidad de ubicaciones disponibles en platea: {cant_platea} \nCantidad de ubicaciones disponibles en palco: {cant_palco}")
+    return
+
+
+
 #######################################            MENUES             #################################################
 def menu_consultas():    
     opcion = ""
@@ -541,9 +570,11 @@ def menu_consultas():
 
         if opcion == "1":
             id_funcion = input("Ingrese el ID de la funcion que desea saber la cantidad de entradas vendidas: ")
-            obtener_cantidad_vendidas_por_funcion(id_funcion)
+            informe_cantidad_vendidas_por_funcion(id_funcion)
             input("\nPresione Enter para continuar...")
         elif opcion == "2":
+            id_funcion = input("Ingrese el ID de la funcion que desea saber la cantidad de lugares disponibles: ")
+            informe_cantidad_ubicaciones_disp_función(id_funcion)
             input("\nPresione Enter para continuar...")
         elif opcion == "3":
             informe_recaudacion_funcion()
